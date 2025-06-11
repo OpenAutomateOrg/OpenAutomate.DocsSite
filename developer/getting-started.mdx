@@ -1,0 +1,465 @@
+---
+title: "Developer Getting Started"
+description: "Start building automation bots with OpenAutomate Python SDK"
+---
+
+# Developer Getting Started
+
+Welcome to OpenAutomate bot development! This guide will help you create your first automation bot using Python and the OpenAutomate SDK.
+
+## Development Environment Setup
+
+### Prerequisites
+
+Before you start developing, ensure you have:
+
+- **Python 3.11+**: Latest stable version recommended
+- **Code Editor**: VS Code, PyCharm, or your preferred editor
+- **Git**: For version control (optional but recommended)
+- **OpenAutomate Account**: Access to the cloud orchestrator
+
+### Python Environment
+
+1. **Create Virtual Environment**
+   ```bash
+   # Create a new virtual environment
+   python -m venv openautomatebot
+   
+   # Activate the environment
+   # Windows
+   openautomatebot\Scripts\activate
+   # macOS/Linux
+   source openautomatebot/bin/activate
+   ```
+
+2. **Install OpenAutomate SDK**
+   ```bash
+   pip install openautomateagent
+   ```
+
+3. **Verify Installation**
+   ```python
+   from openautomateagent import Client
+   print("OpenAutomate SDK installed successfully!")
+   ```
+
+## Your First Bot
+
+### Basic Bot Structure
+
+Every OpenAutomate bot follows this basic structure:
+
+```python
+from openautomateagent import Client
+import sys
+
+def main():
+    # Initialize the OpenAutomate client
+    agent = Client()
+    
+    try:
+        # Update status to indicate start
+        agent.update_status("Starting automation")
+        
+        # Your automation logic here
+        result = perform_automation()
+        
+        # Log success
+        agent.log(f"Automation completed successfully: {result}", level="info")
+        agent.update_status("Completed successfully")
+        
+        return 0  # Success exit code
+        
+    except Exception as e:
+        # Log error and update status
+        agent.log(f"Automation failed: {str(e)}", level="error")
+        agent.update_status("Failed")
+        return 1  # Error exit code
+
+def perform_automation():
+    # Your automation logic goes here
+    return "Hello from OpenAutomate!"
+
+if __name__ == "__main__":
+    exit_code = main()
+    sys.exit(exit_code)
+```
+
+### Hello World Example
+
+Let's create a simple "Hello World" bot:
+
+```python
+from openautomateagent import Client
+import time
+import sys
+
+def main():
+    agent = Client()
+    
+    try:
+        agent.update_status("Starting Hello World automation")
+        agent.log("Hello World automation started", level="info")
+        
+        # Simulate some work
+        for i in range(5):
+            agent.update_status(f"Processing step {i+1}/5")
+            agent.log(f"Completed step {i+1}", level="info")
+            time.sleep(1)  # Simulate work
+        
+        # Final result
+        message = "Hello from OpenAutomate! Automation completed successfully."
+        print(message)
+        agent.log(message, level="info")
+        agent.update_status("Completed")
+        
+        return 0
+        
+    except Exception as e:
+        agent.log(f"Error: {str(e)}", level="error")
+        agent.update_status("Failed")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+## OpenAutomate SDK Reference
+
+### Client Initialization
+
+```python
+from openautomateagent import Client
+
+# Basic initialization
+agent = Client()
+
+# With custom configuration
+agent = Client(
+    base_url="http://localhost:5000",  # Custom agent service URL
+    timeout=30,                        # Request timeout in seconds
+    retry_count=3                      # Number of retries for failed requests
+)
+```
+
+### Status Updates
+
+Keep the orchestrator informed about your automation's progress:
+
+```python
+# Update execution status
+agent.update_status("Processing data")
+agent.update_status("Connecting to database")
+agent.update_status("Generating report")
+agent.update_status("Completed")
+
+# Status with progress percentage
+agent.update_status("Processing files", progress=75)
+```
+
+### Logging
+
+Send log messages to the centralized logging system:
+
+```python
+# Different log levels
+agent.log("Automation started", level="info")
+agent.log("Warning: Large file detected", level="warning")
+agent.log("Error: Connection failed", level="error")
+agent.log("Debug: Variable value = 42", level="debug")
+
+# Log with additional context
+agent.log("User processed", level="info", extra={
+    "user_id": 12345,
+    "processing_time": 2.5,
+    "records_updated": 10
+})
+```
+
+### Asset Management
+
+Securely access credentials and configuration:
+
+```python
+# Get a single asset
+db_password = agent.get_asset("database_password")
+api_key = agent.get_asset("external_api_key")
+
+# Get multiple assets
+assets = agent.get_assets(["db_host", "db_user", "db_password"])
+db_host = assets["db_host"]
+db_user = assets["db_user"]
+db_password = assets["db_password"]
+
+# Check if asset exists
+if agent.has_asset("optional_config"):
+    config = agent.get_asset("optional_config")
+else:
+    config = "default_value"
+```
+
+### Error Handling
+
+Implement robust error handling:
+
+```python
+from openautomateagent import Client, OpenAutomateError
+
+def main():
+    agent = Client()
+    
+    try:
+        agent.update_status("Starting")
+        
+        # Your automation logic
+        result = risky_operation()
+        
+        agent.log(f"Success: {result}", level="info")
+        agent.update_status("Completed")
+        return 0
+        
+    except OpenAutomateError as e:
+        # OpenAutomate-specific errors
+        agent.log(f"OpenAutomate error: {e}", level="error")
+        agent.update_status("Failed - OpenAutomate Error")
+        return 1
+        
+    except ConnectionError as e:
+        # Network-related errors
+        agent.log(f"Connection error: {e}", level="error")
+        agent.update_status("Failed - Connection Error")
+        return 2
+        
+    except Exception as e:
+        # All other errors
+        agent.log(f"Unexpected error: {e}", level="error")
+        agent.update_status("Failed - Unexpected Error")
+        return 3
+```
+
+## Common Automation Patterns
+
+### File Processing
+
+```python
+import os
+from pathlib import Path
+
+def process_files(agent, input_folder, output_folder):
+    agent.update_status("Scanning input folder")
+    
+    input_path = Path(input_folder)
+    output_path = Path(output_folder)
+    output_path.mkdir(exist_ok=True)
+    
+    files = list(input_path.glob("*.txt"))
+    total_files = len(files)
+    
+    agent.log(f"Found {total_files} files to process", level="info")
+    
+    for i, file_path in enumerate(files):
+        progress = int((i / total_files) * 100)
+        agent.update_status(f"Processing {file_path.name}", progress=progress)
+        
+        # Process the file
+        with open(file_path, 'r') as f:
+            content = f.read().upper()  # Example: convert to uppercase
+        
+        output_file = output_path / file_path.name
+        with open(output_file, 'w') as f:
+            f.write(content)
+        
+        agent.log(f"Processed {file_path.name}", level="info")
+    
+    agent.update_status("File processing completed")
+    return total_files
+```
+
+### Database Operations
+
+```python
+import sqlite3
+
+def database_automation(agent):
+    # Get database credentials
+    db_path = agent.get_asset("database_path")
+    
+    agent.update_status("Connecting to database")
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        agent.update_status("Executing queries")
+        
+        # Example: Get record count
+        cursor.execute("SELECT COUNT(*) FROM users")
+        count = cursor.fetchone()[0]
+        
+        agent.log(f"Found {count} users in database", level="info")
+        
+        # Example: Update records
+        cursor.execute("UPDATE users SET last_login = ? WHERE active = 1", 
+                      (datetime.now(),))
+        updated = cursor.rowcount
+        
+        conn.commit()
+        agent.log(f"Updated {updated} user records", level="info")
+        
+        return count, updated
+        
+    finally:
+        if conn:
+            conn.close()
+        agent.update_status("Database connection closed")
+```
+
+### Web Automation
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+
+def web_automation(agent):
+    agent.update_status("Setting up web driver")
+    
+    # Configure Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run in background
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    try:
+        agent.update_status("Navigating to website")
+        driver.get("https://example.com")
+        
+        agent.update_status("Filling form")
+        username = agent.get_asset("web_username")
+        password = agent.get_asset("web_password")
+        
+        driver.find_element(By.NAME, "username").send_keys(username)
+        driver.find_element(By.NAME, "password").send_keys(password)
+        driver.find_element(By.XPATH, "//button[@type='submit']").click()
+        
+        agent.update_status("Extracting data")
+        # Extract data from the page
+        data = driver.find_element(By.CLASS_NAME, "result").text
+        
+        agent.log(f"Extracted data: {data}", level="info")
+        return data
+        
+    finally:
+        driver.quit()
+        agent.update_status("Web driver closed")
+```
+
+## Testing Your Bot
+
+### Local Testing
+
+Test your bot locally before deployment:
+
+```python
+# test_bot.py
+import unittest
+from unittest.mock import Mock, patch
+from your_bot import main
+
+class TestBot(unittest.TestCase):
+    
+    @patch('your_bot.Client')
+    def test_successful_execution(self, mock_client):
+        # Mock the OpenAutomate client
+        mock_agent = Mock()
+        mock_client.return_value = mock_agent
+        
+        # Run the bot
+        result = main()
+        
+        # Verify the bot behaved correctly
+        self.assertEqual(result, 0)
+        mock_agent.update_status.assert_called()
+        mock_agent.log.assert_called()
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### Integration Testing
+
+Test with a real OpenAutomate agent:
+
+```python
+# integration_test.py
+from openautomateagent import Client
+
+def test_integration():
+    agent = Client()
+    
+    try:
+        agent.update_status("Integration test started")
+        agent.log("Testing integration", level="info")
+        
+        # Test asset access
+        test_asset = agent.get_asset("test_asset")
+        print(f"Retrieved test asset: {test_asset}")
+        
+        agent.update_status("Integration test completed")
+        return True
+        
+    except Exception as e:
+        agent.log(f"Integration test failed: {e}", level="error")
+        return False
+
+if __name__ == "__main__":
+    success = test_integration()
+    print(f"Integration test {'passed' if success else 'failed'}")
+```
+
+## Best Practices
+
+### Code Organization
+
+```
+my_automation_bot/
+├── main.py              # Entry point
+├── bot/
+│   ├── __init__.py
+│   ├── core.py          # Main automation logic
+│   ├── utils.py         # Utility functions
+│   └── config.py        # Configuration
+├── tests/
+│   ├── test_core.py
+│   └── test_utils.py
+├── requirements.txt     # Dependencies
+└── README.md           # Documentation
+```
+
+### Error Handling Guidelines
+
+1. **Always use try-catch blocks** around risky operations
+2. **Log errors with context** to help with debugging
+3. **Update status on failures** to inform operators
+4. **Return appropriate exit codes** (0 = success, non-zero = error)
+5. **Clean up resources** in finally blocks
+
+### Performance Tips
+
+1. **Use progress updates** for long-running operations
+2. **Batch operations** when possible
+3. **Implement timeouts** for external calls
+4. **Monitor memory usage** for large data processing
+5. **Use connection pooling** for database operations
+
+## Next Steps
+
+Now that you understand the basics:
+
+1. **Explore Templates**: Check out our [Python Templates](/developer/python-templates)
+2. **Learn Advanced Features**: Read the [SDK Reference](/developer/sdk-reference)
+3. **Package Your Bot**: Learn about [Packaging](/developer/packaging)
+4. **Deploy and Test**: Follow the [Testing Guide](/developer/testing)
+5. **Best Practices**: Review [Best Practices](/developer/best-practices)

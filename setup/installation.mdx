@@ -1,0 +1,216 @@
+---
+title: "Installation Guide"
+description: "Complete installation guide for OpenAutomate components"
+---
+
+# Installation Guide
+
+This guide covers the complete installation process for OpenAutomate, from setting up your cloud account to deploying bot agents.
+
+## Overview
+
+OpenAutomate installation involves two main components:
+1. **Cloud Account Setup**: Creating your organization in the hosted orchestrator
+2. **Bot Agent Installation**: Deploying agents on your infrastructure
+
+## Phase 1: Cloud Account Setup
+
+### Step 1: Create Account
+
+1. Visit [cloud.openautomate.me](https://cloud.openautomate.me)
+2. Click **Sign Up** to create a new account
+3. Fill in your details:
+   - **Email**: Your business email address
+   - **Full Name**: Your full name
+   - **Password**: Strong password (8+ characters)
+4. Click **Create Account**
+
+### Step 2: Email Verification
+
+1. Check your email for a verification message
+2. Click the verification link
+3. Return to the login page
+4. Sign in with your credentials
+
+### Step 3: Organization Setup
+
+1. After login, you'll be prompted to create an organization
+2. Fill in organization details:
+   - **Organization Name**: Your company or team name
+   - **Organization Slug**: URL-friendly identifier (e.g., "acme-corp")
+   - **Description**: Brief description of your organization
+3. Click **Create Organization**
+
+### Step 4: Initial Configuration
+
+1. **User Profile**: Complete your profile information
+2. **Billing Setup**: Configure payment method (if required)
+3. **Team Invites**: Invite team members (optional)
+4. **Security Settings**: Configure two-factor authentication (recommended)
+
+## Phase 2: Bot Agent Installation
+
+### Prerequisites Check
+
+Before installing the Bot Agent, ensure:
+- [ ] Windows 10/11 or Windows Server 2019+
+- [ ] Administrator privileges
+- [ ] Python 3.11+ installed
+- [ ] Internet connectivity
+- [ ] Antivirus exclusions configured
+
+### Step 1: Download Agent Installer
+
+1. In the OpenAutomate dashboard, navigate to **Agents**
+2. Click **Add New Agent**
+3. Fill in agent details:
+   - **Agent Name**: Descriptive name (e.g., "Production-Server-01")
+   - **Machine Name**: Windows computer name
+   - **Description**: Optional description
+4. Click **Generate Machine Key**
+5. **Important**: Copy and save the machine key securely
+6. Download the **Bot Agent Installer**
+
+### Step 2: Install Bot Agent
+
+1. **Run Installer**: Right-click the installer and select "Run as administrator"
+2. **Welcome Screen**: Click **Next** to continue
+3. **License Agreement**: Accept the license terms
+4. **Installation Path**: Choose installation directory (default: `C:\Program Files\OpenAutomate\`)
+5. **Service Configuration**: 
+   - Service will run as Local System (recommended)
+   - Auto-start service enabled
+6. **Python Detection**: Installer will detect Python installation
+7. **Installation**: Click **Install** to begin installation
+
+### Step 3: Initial Agent Configuration
+
+1. **Launch Agent UI**: The installer will launch the configuration wizard
+2. **Connection Settings**:
+   - **Organization Slug**: Enter your organization slug
+   - **Machine Key**: Paste the machine key from Step 1
+   - **Server URL**: Default is `https://cloud.openautomate.me` (usually no change needed)
+3. **Test Connection**: Click **Test Connection** to verify settings
+4. **Register Agent**: Click **Register** to complete setup
+
+### Step 4: Verify Installation
+
+1. **Service Status**: Verify the "OpenAutomate Bot Agent" service is running
+2. **Dashboard Check**: Return to the web dashboard and confirm the agent appears as "Connected"
+3. **Agent UI**: Launch the Agent UI from the Start menu to monitor status
+
+## Advanced Installation Options
+
+### Silent Installation
+
+For automated deployments, use the silent installation mode:
+
+```cmd
+OpenAutomateAgentInstaller.exe /S /ORGSLUG="your-org-slug" /MACHINEKEY="your-machine-key"
+```
+
+Parameters:
+- `/S`: Silent installation
+- `/ORGSLUG`: Your organization slug
+- `/MACHINEKEY`: The generated machine key
+- `/INSTALLDIR`: Custom installation directory (optional)
+
+### Group Policy Deployment
+
+For enterprise environments, deploy via Group Policy:
+
+1. **Create MSI Package**: Convert the installer to MSI format
+2. **Group Policy Object**: Create new GPO for software installation
+3. **Assignment**: Assign to target computers or users
+4. **Configuration**: Use registry settings for initial configuration
+
+### Configuration File
+
+Create a configuration file for automated setup:
+
+```json
+{
+  "organizationSlug": "your-org-slug",
+  "machineKey": "your-machine-key",
+  "serverUrl": "https://cloud.openautomate.me",
+  "autoStart": true,
+  "logLevel": "Information"
+}
+```
+
+Place the file at: `C:\ProgramData\OpenAutomate\config.json`
+
+## Post-Installation Tasks
+
+### Security Configuration
+
+1. **Firewall Rules**: Ensure outbound HTTPS (443) is allowed
+2. **Antivirus Exclusions**: Add OpenAutomate directories
+3. **User Permissions**: Configure access for automation users
+4. **Asset Security**: Set up secure credential storage
+
+### Performance Optimization
+
+1. **Resource Limits**: Configure memory and CPU limits
+2. **Concurrent Executions**: Set maximum parallel automations
+3. **Cache Settings**: Configure package cache size
+4. **Log Retention**: Set log retention policies
+
+### Monitoring Setup
+
+1. **Health Checks**: Enable agent health monitoring
+2. **Alerts**: Configure alert notifications
+3. **Logging**: Set up centralized logging (optional)
+4. **Metrics**: Enable performance metrics collection
+
+## Troubleshooting Installation Issues
+
+### Common Installation Problems
+
+#### Installer Fails to Start
+- **Cause**: Insufficient permissions
+- **Solution**: Run as Administrator
+- **Verification**: Check User Account Control settings
+
+#### Python Not Detected
+- **Cause**: Python not in system PATH
+- **Solution**: Reinstall Python with "Add to PATH" option
+- **Verification**: Run `python --version` in Command Prompt
+
+#### Service Won't Start
+- **Cause**: Port conflicts or permissions
+- **Solution**: Check Windows Event Log for details
+- **Verification**: Use `sc query OpenAutomateAgent` command
+
+#### Connection Failed
+- **Cause**: Network connectivity or firewall
+- **Solution**: Test connectivity to `cloud.openautomate.me`
+- **Verification**: Use `telnet cloud.openautomate.me 443`
+
+### Log File Locations
+
+Check these locations for troubleshooting:
+
+- **Installation Logs**: `%TEMP%\OpenAutomate_Install.log`
+- **Service Logs**: `C:\ProgramData\OpenAutomate\Logs\`
+- **Windows Event Log**: Application and System logs
+- **Agent UI Logs**: `%APPDATA%\OpenAutomate\UI\Logs\`
+
+### Getting Help
+
+If you encounter issues:
+
+1. **Documentation**: Check our troubleshooting guides
+2. **Community**: Join our Discord server
+3. **Support**: Email support@openautomate.me
+4. **GitHub**: Report bugs on our GitHub repository
+
+## Next Steps
+
+After successful installation:
+
+1. **Create Your First Bot**: Follow the [Quick Start Guide](/quickstart)
+2. **Explore Templates**: Download Python bot templates
+3. **Configure Assets**: Set up secure credential storage
+4. **Schedule Automations**: Create recurring executions
+5. **Monitor Performance**: Set up dashboards and alerts

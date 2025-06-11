@@ -1,0 +1,276 @@
+---
+title: "Agent Installation"
+description: "Complete guide to installing and configuring OpenAutomate Bot Agents"
+---
+
+# Bot Agent Installation
+
+The OpenAutomate Bot Agent is the distributed component that executes automations on your infrastructure. This guide covers the complete installation and configuration process.
+
+## Overview
+
+The Bot Agent consists of two main components:
+- **Windows Service**: Background service that communicates with the orchestrator
+- **WPF UI Application**: Desktop application for configuration and monitoring
+
+## Prerequisites
+
+Before installing the Bot Agent, ensure your system meets the requirements:
+
+### System Requirements
+- **OS**: Windows 10 (1903+), Windows 11, or Windows Server 2019+
+- **Architecture**: x64 (64-bit)
+- **RAM**: 4 GB minimum, 8 GB recommended
+- **Storage**: 2 GB free space minimum
+- **Network**: Internet connectivity for orchestrator communication
+
+### Software Requirements
+- **Python 3.11+**: Required for automation execution
+- **.NET 8.0 Runtime**: Automatically installed with the agent
+- **Administrator Rights**: Required for installation
+
+### Network Requirements
+- **Outbound HTTPS (443)**: To cloud.openautomate.me
+- **Firewall**: Allow OpenAutomate Agent through Windows Firewall
+- **Proxy**: Supported with authentication if required
+
+## Installation Process
+
+### Step 1: Prepare for Installation
+
+1. **Download Installer**
+   - Log into your OpenAutomate dashboard
+   - Navigate to **Agents** → **Add New Agent**
+   - Fill in agent details and generate a machine key
+   - Download the Bot Agent installer
+
+2. **Prepare System**
+   - Close all unnecessary applications
+   - Disable antivirus temporarily (if needed)
+   - Ensure stable internet connection
+   - Have the machine key ready
+
+### Step 2: Run the Installer
+
+1. **Launch Installer**
+   ```cmd
+   # Right-click the installer and select "Run as administrator"
+   OpenAutomateAgentInstaller.exe
+   ```
+
+2. **Installation Wizard**
+   - **Welcome Screen**: Click **Next**
+   - **License Agreement**: Accept the terms
+   - **Installation Directory**: Choose path (default: `C:\Program Files\OpenAutomate\`)
+   - **Service Configuration**: Configure service settings
+   - **Python Detection**: Verify Python installation
+   - **Ready to Install**: Review settings and click **Install**
+
+3. **Installation Progress**
+   - Files are copied to the installation directory
+   - Windows Service is installed and configured
+   - Desktop shortcuts are created
+   - Initial configuration files are set up
+
+### Step 3: Initial Configuration
+
+After installation, the configuration wizard launches automatically:
+
+1. **Connection Settings**
+   - **Organization Slug**: Enter your organization identifier
+   - **Machine Key**: Paste the machine key from the dashboard
+   - **Server URL**: Default is `https://cloud.openautomate.me`
+
+2. **Test Connection**
+   - Click **Test Connection** to verify settings
+   - Ensure the test passes before proceeding
+   - Troubleshoot any connection issues
+
+3. **Register Agent**
+   - Click **Register** to complete the setup
+   - The agent will appear in your dashboard as "Connected"
+   - Configuration is saved for future use
+
+## Configuration Options
+
+### Service Configuration
+
+The Windows Service can be configured with various options:
+
+#### Service Properties
+- **Service Name**: OpenAutomate Bot Agent
+- **Display Name**: OpenAutomate Bot Agent
+- **Startup Type**: Automatic (Delayed Start)
+- **Log On As**: Local System (recommended)
+
+#### Advanced Settings
+```json
+{
+  "maxConcurrentExecutions": 5,
+  "executionTimeout": 3600,
+  "heartbeatInterval": 30,
+  "logLevel": "Information",
+  "packageCacheSize": "5GB"
+}
+```
+
+### Network Configuration
+
+#### Proxy Settings
+If your network requires a proxy:
+
+1. **System Proxy**: Agent uses system proxy settings by default
+2. **Manual Configuration**: Edit `appsettings.json`:
+   ```json
+   {
+     "proxy": {
+       "enabled": true,
+       "url": "http://proxy.company.com:8080",
+       "username": "domain\\username",
+       "password": "encrypted_password"
+     }
+   }
+   ```
+
+#### Firewall Configuration
+Add firewall rules for the agent:
+
+```powershell
+# Allow OpenAutomate Agent through Windows Firewall
+New-NetFirewallRule -DisplayName "OpenAutomate Agent" -Direction Outbound -Protocol TCP -RemotePort 443 -Action Allow
+```
+
+### Security Configuration
+
+#### Certificate Validation
+- **Default**: Validates SSL certificates
+- **Development**: Can disable for testing (not recommended for production)
+- **Custom CA**: Support for custom certificate authorities
+
+#### Authentication
+- **Machine Key**: Unique key for agent authentication
+- **Rotation**: Keys can be rotated without reinstalling
+- **Encryption**: All communication is encrypted with TLS 1.3
+
+## Post-Installation Tasks
+
+### Verify Installation
+
+1. **Service Status**
+   ```cmd
+   # Check service status
+   sc query "OpenAutomate Bot Agent"
+   
+   # Expected output: STATE = RUNNING
+   ```
+
+2. **Dashboard Verification**
+   - Return to the OpenAutomate dashboard
+   - Navigate to **Agents**
+   - Confirm the agent shows as "Connected"
+   - Check the last heartbeat timestamp
+
+3. **Agent UI Test**
+   - Launch the Agent UI from Start menu
+   - Verify connection status is "Connected"
+   - Check for any error messages
+
+### Configure Antivirus Exclusions
+
+Add the following paths to antivirus exclusions:
+
+```
+C:\Program Files\OpenAutomate\
+C:\ProgramData\OpenAutomate\
+%TEMP%\OpenAutomate\
+```
+
+### Set Up Logging
+
+Configure logging for troubleshooting:
+
+1. **Log Levels**: Information, Warning, Error, Debug
+2. **Log Rotation**: Automatic cleanup of old logs
+3. **Log Location**: `C:\ProgramData\OpenAutomate\Logs\`
+
+## Advanced Installation Scenarios
+
+### Silent Installation
+
+For automated deployments:
+
+```cmd
+OpenAutomateAgentInstaller.exe /S /ORGSLUG="your-org" /MACHINEKEY="your-key"
+```
+
+### Group Policy Deployment
+
+For enterprise environments:
+
+1. **Create MSI**: Convert installer to MSI format
+2. **GPO Configuration**: Set up Group Policy Object
+3. **Registry Settings**: Configure via registry
+4. **Deployment**: Push to target machines
+
+### Docker Installation
+
+For containerized environments:
+
+```dockerfile
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+COPY OpenAutomateAgent/ /app/
+WORKDIR /app
+CMD ["OpenAutomate.BotAgent.Service.exe"]
+```
+
+## Troubleshooting Installation
+
+### Common Issues
+
+#### Installation Fails
+- **Cause**: Insufficient permissions
+- **Solution**: Run as Administrator
+- **Check**: User Account Control settings
+
+#### Service Won't Start
+- **Cause**: Port conflicts or missing dependencies
+- **Solution**: Check Windows Event Log
+- **Command**: `eventvwr.msc` → Windows Logs → Application
+
+#### Python Not Found
+- **Cause**: Python not in system PATH
+- **Solution**: Reinstall Python with "Add to PATH" option
+- **Verify**: Run `python --version` in Command Prompt
+
+#### Connection Failed
+- **Cause**: Network connectivity or firewall
+- **Solution**: Test connectivity to orchestrator
+- **Command**: `telnet cloud.openautomate.me 443`
+
+### Log Analysis
+
+Check these log files for troubleshooting:
+
+1. **Installation Log**: `%TEMP%\OpenAutomate_Install.log`
+2. **Service Log**: `C:\ProgramData\OpenAutomate\Logs\Service.log`
+3. **Agent UI Log**: `%APPDATA%\OpenAutomate\UI\Logs\UI.log`
+4. **Windows Event Log**: Application and System logs
+
+### Getting Help
+
+If you encounter issues:
+
+1. **Documentation**: Check troubleshooting guides
+2. **Community**: Join our Discord server
+3. **Support**: Email support@openautomate.me
+4. **Logs**: Include relevant log files when requesting help
+
+## Next Steps
+
+After successful installation:
+
+1. **Test Execution**: Run a simple test automation
+2. **Configure Assets**: Set up secure credential storage
+3. **Install Packages**: Deploy your first automation package
+4. **Monitor Performance**: Set up monitoring and alerts
+5. **Scale Deployment**: Install additional agents as needed

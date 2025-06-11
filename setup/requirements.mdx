@@ -1,0 +1,171 @@
+---
+title: "System Requirements"
+description: "Hardware and software requirements for OpenAutomate"
+---
+
+# System Requirements
+
+Before installing OpenAutomate components, ensure your system meets the following requirements.
+
+## Cloud Orchestrator Requirements
+
+The Cloud Orchestrator is hosted by OpenAutomate, so no local installation is required. You only need:
+
+- **Web Browser**: Modern browser (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
+- **Internet Connection**: Stable connection for real-time updates
+- **Screen Resolution**: Minimum 1024x768, recommended 1920x1080
+
+## Bot Agent Requirements
+
+### Operating System
+- **Windows 10** (version 1903 or later)
+- **Windows 11** (all versions)
+- **Windows Server 2019** or later
+- **Architecture**: x64 (64-bit) required
+
+### Hardware Requirements
+
+#### Minimum Requirements
+- **CPU**: 2 cores, 2.0 GHz
+- **RAM**: 4 GB
+- **Storage**: 2 GB free space
+- **Network**: Broadband internet connection
+
+#### Recommended Requirements
+- **CPU**: 4 cores, 2.5 GHz or higher
+- **RAM**: 8 GB or more
+- **Storage**: 10 GB free space (for packages and logs)
+- **Network**: High-speed internet with low latency
+
+### Software Dependencies
+
+#### Required Components
+- **.NET 8.0 Runtime**: Automatically installed with the agent
+- **Python 3.11+**: Required for automation execution
+- **PowerShell 5.1+**: For system integration (included in Windows)
+
+#### Optional Components
+- **Visual C++ Redistributable**: For certain Python packages
+- **Git**: For version control integration
+- **Chrome/Edge WebDriver**: For web automation
+
+## Python Environment Requirements
+
+### Python Version
+- **Minimum**: Python 3.11
+- **Recommended**: Python 3.12 (latest stable)
+- **Architecture**: Must match system (x64)
+
+### Python Packages
+The following packages are commonly used in OpenAutomate bots:
+
+#### Core Packages (Auto-installed)
+```
+openautomateagent>=1.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+```
+
+#### Optional Packages
+```
+selenium>=4.15.0          # Web automation
+pandas>=2.1.0             # Data manipulation
+openpyxl>=3.1.0           # Excel files
+pillow>=10.0.0            # Image processing
+psutil>=5.9.0             # System monitoring
+```
+
+## Network Requirements
+
+### Outbound Connections
+The Bot Agent requires outbound HTTPS connections to:
+
+- **cloud.openautomate.me**: Main orchestrator (port 443)
+- **api.openautomate.me**: API services (port 443)
+- **cdn.openautomate.me**: Package downloads (port 443)
+- **hub.openautomate.me**: Real-time communication (port 443)
+
+### Firewall Configuration
+- **Outbound HTTPS (443)**: Required for all communication
+- **Outbound HTTP (80)**: Optional for package downloads
+- **Inbound connections**: Not required (agent initiates all connections)
+
+### Proxy Support
+- **HTTP/HTTPS Proxy**: Supported with authentication
+- **SOCKS Proxy**: Not supported
+- **PAC Files**: Supported through system configuration
+
+## Security Requirements
+
+### User Permissions
+- **Installation**: Administrator rights required
+- **Service Operation**: Runs as Local System
+- **UI Application**: Standard user rights sufficient
+
+### Antivirus Considerations
+Add the following to antivirus exclusions:
+- `C:\Program Files\OpenAutomate\`
+- `C:\ProgramData\OpenAutomate\`
+- `%TEMP%\OpenAutomate\`
+
+### Windows Features
+- **Windows Service**: Must be enabled
+- **WPF Support**: Required for UI application
+- **TLS 1.2+**: Required for secure communication
+
+## Performance Considerations
+
+### Concurrent Executions
+- **Single Agent**: Up to 5 concurrent automations
+- **Multiple Agents**: No limit (deploy multiple agents)
+- **Resource Isolation**: Each automation runs in separate process
+
+### Storage Requirements
+- **Base Installation**: 500 MB
+- **Package Cache**: 1-5 GB (configurable)
+- **Logs**: 100 MB - 1 GB (configurable retention)
+- **Temporary Files**: 500 MB - 2 GB
+
+### Memory Usage
+- **Agent Service**: 50-200 MB baseline
+- **UI Application**: 100-300 MB
+- **Python Execution**: 50-500 MB per automation
+- **Total Recommended**: 8 GB for optimal performance
+
+## Compatibility Matrix
+
+| Component | Windows 10 | Windows 11 | Server 2019 | Server 2022 |
+|-----------|------------|------------|-------------|-------------|
+| Bot Agent Service | ✅ | ✅ | ✅ | ✅ |
+| Agent UI | ✅ | ✅ | ✅ | ✅ |
+| Python 3.11 | ✅ | ✅ | ✅ | ✅ |
+| Python 3.12 | ✅ | ✅ | ✅ | ✅ |
+
+## Validation Checklist
+
+Before proceeding with installation, verify:
+
+- [ ] Operating system version and architecture
+- [ ] Available disk space and memory
+- [ ] Internet connectivity to required domains
+- [ ] Administrator access for installation
+- [ ] Python installation and version
+- [ ] Antivirus exclusions configured
+- [ ] Network proxy settings (if applicable)
+
+## Troubleshooting Common Issues
+
+### Python Not Found
+- Ensure Python is installed and in system PATH
+- Verify Python version with `python --version`
+- Install from [python.org](https://python.org) if missing
+
+### Network Connectivity
+- Test connectivity: `ping cloud.openautomate.me`
+- Check firewall and proxy settings
+- Verify DNS resolution
+
+### Insufficient Permissions
+- Run installer as Administrator
+- Check User Account Control (UAC) settings
+- Verify service permissions

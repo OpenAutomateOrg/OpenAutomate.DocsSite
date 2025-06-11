@@ -1,0 +1,142 @@
+---
+title: "Quick Start Guide"
+description: "Get started with OpenAutomate in under 10 minutes"
+---
+
+# Quick Start Guide
+
+This guide will help you set up OpenAutomate and run your first automation in under 10 minutes.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+- Windows 10/11 or Windows Server 2019+
+- Python 3.11 or higher installed
+- Administrator access to install the Bot Agent
+- An active internet connection
+
+## Step 1: Create Your Organization
+
+<Steps>
+  <Step title="Sign Up">
+    Visit [cloud.openautomate.me](https://cloud.openautomate.me) and create your account.
+  </Step>
+  <Step title="Create Organization">
+    Set up your organization unit with a unique name and slug.
+  </Step>
+  <Step title="Verify Email">
+    Check your email and verify your account to activate full features.
+  </Step>
+</Steps>
+
+## Step 2: Install Bot Agent
+
+<AccordionGroup>
+  <Accordion icon="download" title="Download Agent Installer">
+    1. Log into your OpenAutomate dashboard
+    2. Navigate to **Agents** → **Add New Agent**
+    3. Download the Bot Agent installer for Windows
+    4. Note down the **Machine Key** provided (you'll need this for registration)
+  </Accordion>
+  
+  <Accordion icon="gear" title="Install and Configure">
+    1. Run the installer as Administrator
+    2. Follow the installation wizard
+    3. Launch the **OpenAutomate Agent UI** from the Start menu
+    4. Enter your **Machine Key** and **Organization Slug**
+    5. Click **Register** to connect to the cloud orchestrator
+  </Accordion>
+</AccordionGroup>
+
+## Step 3: Create Your First Bot
+
+<AccordionGroup>
+  <Accordion icon="code" title="Download Python Template">
+    1. In the dashboard, go to **Packages** → **Create New**
+    2. Download the "Hello World" Python template
+    3. Extract the template to a local folder
+  </Accordion>
+  
+  <Accordion icon="edit" title="Customize the Bot">
+    Open `main.py` and modify the script:
+    ```python
+    from openautomateagent import Client
+    
+    def main():
+        # Initialize the OpenAutomate client
+        agent = Client()
+        
+        # Update status
+        agent.update_status("Starting Hello World automation")
+        
+        # Your automation logic here
+        print("Hello from OpenAutomate!")
+        agent.log("Automation completed successfully", level="info")
+        
+        # Mark as completed
+        agent.update_status("Completed")
+    
+    if __name__ == "__main__":
+        main()
+    ```
+  </Accordion>
+  
+  <Accordion icon="upload" title="Upload Package">
+    1. Zip your bot folder (including `main.py` and any dependencies)
+    2. In the dashboard, upload the ZIP file as a new package
+    3. Add a name, description, and version number
+    4. Click **Save** to store the package
+  </Accordion>
+</AccordionGroup>
+
+## Step 4: Execute Your First Automation
+
+<Steps>
+  <Step title="Create Execution">
+    1. Go to **Executions** → **New Execution**
+    2. Select your uploaded package
+    3. Choose the registered Bot Agent
+    4. Click **Execute Now**
+  </Step>
+  
+  <Step title="Monitor Progress">
+    Watch the real-time execution status in the dashboard. You'll see:
+    - Package download progress
+    - Execution start notification
+    - Live status updates from your bot
+    - Completion confirmation
+  </Step>
+  
+  <Step title="View Results">
+    Check the execution logs and results in the **Execution History** section.
+  </Step>
+</Steps>
+
+## Next Steps
+
+Congratulations! You've successfully set up OpenAutomate and run your first automation. Here's what to explore next:
+
+<CardGroup cols={2}>
+  <Card title="Build Advanced Bots" icon="robot" href="/developer/getting-started">
+    Learn to create more sophisticated automations using our Python SDK
+  </Card>
+  
+  <Card title="Schedule Automations" icon="calendar" href="/orchestrator/scheduling">
+    Set up recurring executions with flexible scheduling options
+  </Card>
+  
+  <Card title="Manage Assets" icon="key" href="/orchestrator/assets">
+    Securely store and access credentials in your automations
+  </Card>
+  
+  <Card title="Monitor Performance" icon="chart-line" href="/orchestrator/analytics">
+    Track automation performance and success rates
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+- **Documentation**: Browse our comprehensive guides
+- **Community**: Join our Discord server for support
+- **Support**: Contact us at support@openautomate.me
+- **GitHub**: Report issues or contribute to the project

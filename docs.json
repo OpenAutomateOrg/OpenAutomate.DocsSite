@@ -1,0 +1,113 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "OpenAutomate Documentation",
+  "colors": {
+    "primary": "#FF6B35",
+    "light": "#FF8A65",
+    "dark": "#E64A19"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Getting Started",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "index",
+              "overview",
+              "architecture",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Setup",
+            "pages": [
+              "setup/requirements",
+              "setup/installation"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Orchestrator",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "orchestrator/dashboard"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Agent",
+        "groups": [
+          {
+            "group": "Installation",
+            "pages": [
+              "agent/installation"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer Guide",
+        "groups": [
+          {
+            "group": "Bot Development",
+            "pages": [
+              "developer/getting-started",
+              "developer/python-templates"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Launch Orchestrator",
+          "href": "https://cloud.openautomate.me",
+          "icon": "rocket"
+        },
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/OpenAutomateOrg",
+          "icon": "github"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/hPt44QfY4B",
+          "icon": "discord"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@openautomate.io"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Launch Orchestrator",
+      "href": "https://cloud.openautomate.me"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/OpenAutomateOrg",
+      "discord": "https://discord.gg/hPt44QfY4B",
+      "linkedin": "https://linkedin.com/company/openautomate"
+    }
+  }
+}

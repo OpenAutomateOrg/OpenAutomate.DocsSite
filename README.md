@@ -197,6 +197,6 @@ This documentation is licensed under the [MIT License](LICENSE).
 ## 🔗 Links
 
 - **Live Documentation**: [docs.openautomate.io](https://docs.openautomate.io)
-- **OpenAutomate Platform**: [cloud.openautomate.me](https://cloud.openautomate.me)
+- **OpenAutomate Platform**: [cloud.openautomate.io](https://cloud.openautomate.io)
 - **Main Repository**: [OpenAutomate](https://github.com/OpenAutomateOrg/OpenAutomate)
 - **Community**: [Discord Server](https://discord.gg/hPt44QfY4B)

@@ -70,7 +70,7 @@
       "anchors": [
         {
           "anchor": "Launch Orchestrator",
-          "href": "https://cloud.openautomate.me",
+          "href": "https://cloud.openautomate.io",
           "icon": "rocket"
         },
         {
@@ -100,7 +100,7 @@
     "primary": {
       "type": "button",
       "label": "Launch Orchestrator",
-      "href": "https://cloud.openautomate.me"
+      "href": "https://cloud.openautomate.io"
     }
   },
   "footer": {

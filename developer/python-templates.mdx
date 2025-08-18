@@ -616,21 +616,44 @@ if __name__ == "__main__":
 
 ## Using Templates
 
-### 1. Download Template
+### 1. Create Bot from Template
 
-Templates are available in the OpenAutomate dashboard:
+OpenAutomate uses cookiecutter to generate bot projects from templates:
 
-1. Go to **Packages** → **Create New**
-2. Select **Use Template**
-3. Choose your desired template
-4. Download the template ZIP file
+#### Prerequisites
+Install cookiecutter if you haven't already:
+```bash
+pip install cookiecutter
+```
+
+#### First Time Setup (From GitHub)
+```bash
+cookiecutter https://github.com/OpenAutomateOrg/openautomate-bot-template
+```
+
+#### Additional Bots (Using Local Template)
+If you've already cloned the template repository locally:
+```bash
+# From local path
+cookiecutter path/to/openautomate-bot-template
+
+# Or from within the template directory
+cookiecutter .
+```
+
+#### Answer the Prompts
+```
+bot_name [MyBot]: FileProcessorBot
+bot_description [A Python automation bot]: Processes CSV files automatically
+```
 
 ### 2. Customize Template
 
-1. Extract the template to your development folder
-2. Modify the code to fit your specific needs
-3. Update the `requirements.txt` file if you add dependencies
-4. Test your bot locally
+1. Navigate to your generated bot project
+2. Install dependencies: `pip install -r requirements.txt`
+3. Modify `bot.py` to fit your specific needs
+4. Update the `requirements.txt` file if you add dependencies
+5. Test your bot locally: `python bot.py`
 
 ### 3. Deploy Template
 

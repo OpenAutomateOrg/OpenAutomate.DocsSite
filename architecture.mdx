@@ -60,7 +60,7 @@ graph TB
 - **Background Workers**: Scheduled tasks and maintenance operations
 
 ### Data Layer
-- **PostgreSQL Database**: Primary data storage with ACID compliance
+- **SQL Server Database**: Primary data storage with ACID compliance
 - **S3-Compatible Storage**: Package and asset storage
 - **Redis Cache**: Session management and performance optimization
 - **Audit Logging**: Comprehensive activity tracking
@@ -156,8 +156,9 @@ sequenceDiagram
 - **Authentication**: JWT Bearer tokens
 
 ### Frontend
-- **Framework**: Next.js 14
+- **Framework**: Next.js 15
 - **Language**: TypeScript
+- **Runtime**: React 19
 - **Styling**: Tailwind CSS
 - **State Management**: React Query
 - **Real-time**: SignalR Client
@@ -170,7 +171,7 @@ sequenceDiagram
 - **Storage**: Local file system
 
 ### Infrastructure
-- **Database**: PostgreSQL 15+
+- **Database**: SQL Server 2019+
 - **Storage**: S3-compatible object storage
 - **Cache**: Redis 7+
 - **Hosting**: Docker containers

@@ -1,465 +1,270 @@
 ---
 title: "Developer Getting Started"
-description: "Start building automation bots with OpenAutomate Python SDK"
+description: "Start building automation bots with OpenAutomate bot templates"
 ---
 
 # Developer Getting Started
 
-Welcome to OpenAutomate bot development! This guide will help you create your first automation bot using Python and the OpenAutomate SDK.
+Welcome to OpenAutomate bot development! This guide will help you create your first automation bot using our cookiecutter template - the easiest way to get started.
 
-## Development Environment Setup
-
-### Prerequisites
+## Prerequisites
 
 Before you start developing, ensure you have:
 
-- **Python 3.11+**: Latest stable version recommended
+- **Python 3.11+**: Download from [python.org](https://python.org)
+- **Cookiecutter**: Install with `pip install cookiecutter`
 - **Code Editor**: VS Code, PyCharm, or your preferred editor
-- **Git**: For version control (optional but recommended)
 - **OpenAutomate Account**: Access to the cloud orchestrator
 
-### Python Environment
+## Step 1: Create Your First Bot
 
-1. **Create Virtual Environment**
-   ```bash
-   # Create a new virtual environment
-   python -m venv openautomatebot
-   
-   # Activate the environment
-   # Windows
-   openautomatebot\Scripts\activate
-   # macOS/Linux
-   source openautomatebot/bin/activate
-   ```
+The fastest way to start is using our bot template:
 
-2. **Install OpenAutomate SDK**
-   ```bash
-   pip install openautomateagent
-   ```
+### Generate from Template
 
-3. **Verify Installation**
-   ```python
-   from openautomateagent import Client
-   print("OpenAutomate SDK installed successfully!")
-   ```
+```bash
+# Install cookiecutter first
+pip install cookiecutter
 
-## Your First Bot
-
-### Basic Bot Structure
-
-Every OpenAutomate bot follows this basic structure:
-
-```python
-from openautomateagent import Client
-import sys
-
-def main():
-    # Initialize the OpenAutomate client
-    agent = Client()
-    
-    try:
-        # Update status to indicate start
-        agent.update_status("Starting automation")
-        
-        # Your automation logic here
-        result = perform_automation()
-        
-        # Log success
-        agent.log(f"Automation completed successfully: {result}", level="info")
-        agent.update_status("Completed successfully")
-        
-        return 0  # Success exit code
-        
-    except Exception as e:
-        # Log error and update status
-        agent.log(f"Automation failed: {str(e)}", level="error")
-        agent.update_status("Failed")
-        return 1  # Error exit code
-
-def perform_automation():
-    # Your automation logic goes here
-    return "Hello from OpenAutomate!"
-
-if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+# Generate your bot from the template
+cookiecutter https://github.com/OpenAutomateOrg/openautomate-bot-template
 ```
 
-### Hello World Example
+### Answer the Prompts
 
-Let's create a simple "Hello World" bot:
-
-```python
-from openautomateagent import Client
-import time
-import sys
-
-def main():
-    agent = Client()
-    
-    try:
-        agent.update_status("Starting Hello World automation")
-        agent.log("Hello World automation started", level="info")
-        
-        # Simulate some work
-        for i in range(5):
-            agent.update_status(f"Processing step {i+1}/5")
-            agent.log(f"Completed step {i+1}", level="info")
-            time.sleep(1)  # Simulate work
-        
-        # Final result
-        message = "Hello from OpenAutomate! Automation completed successfully."
-        print(message)
-        agent.log(message, level="info")
-        agent.update_status("Completed")
-        
-        return 0
-        
-    except Exception as e:
-        agent.log(f"Error: {str(e)}", level="error")
-        agent.update_status("Failed")
-        return 1
-
-if __name__ == "__main__":
-    sys.exit(main())
+```
+bot_name [MyBot]: FileProcessorBot
+bot_description [A Python automation bot]: Processes CSV files automatically
 ```
 
-## OpenAutomate SDK Reference
+### Navigate to Your New Project
 
-### Client Initialization
-
-```python
-from openautomateagent import Client
-
-# Basic initialization
-agent = Client()
-
-# With custom configuration
-agent = Client(
-    base_url="http://localhost:5000",  # Custom agent service URL
-    timeout=30,                        # Request timeout in seconds
-    retry_count=3                      # Number of retries for failed requests
-)
+```bash
+cd FileProcessorBot
 ```
 
-### Status Updates
+You'll get a project structure like this:
 
-Keep the orchestrator informed about your automation's progress:
-
-```python
-# Update execution status
-agent.update_status("Processing data")
-agent.update_status("Connecting to database")
-agent.update_status("Generating report")
-agent.update_status("Completed")
-
-# Status with progress percentage
-agent.update_status("Processing files", progress=75)
+```
+FileProcessorBot/
+├── bot.py                     # 👈 Your main file - edit this!
+├── framework/                 # Bot utilities (don't touch)
+├── examples/                  # Example bots to learn from
+├── config/                    # Configuration files
+├── tasks/                     # Your custom task modules (optional)
+├── requirements.txt           # Python dependencies
+├── .gitignore                # Git ignore file
+└── README.md                  # Project-specific README
 ```
 
-### Logging
+## Step 2: Install Dependencies
 
-Send log messages to the centralized logging system:
-
-```python
-# Different log levels
-agent.log("Automation started", level="info")
-agent.log("Warning: Large file detected", level="warning")
-agent.log("Error: Connection failed", level="error")
-agent.log("Debug: Variable value = 42", level="debug")
-
-# Log with additional context
-agent.log("User processed", level="info", extra={
-    "user_id": 12345,
-    "processing_time": 2.5,
-    "records_updated": 10
-})
+```bash
+pip install -r requirements.txt
 ```
 
-### Asset Management
+## Step 3: Edit Your Bot
 
-Securely access credentials and configuration:
+Open `bot.py` and find the `execute` method. This is where your automation logic goes:
 
 ```python
-# Get a single asset
-db_password = agent.get_asset("database_password")
-api_key = agent.get_asset("external_api_key")
-
-# Get multiple assets
-assets = agent.get_assets(["db_host", "db_user", "db_password"])
-db_host = assets["db_host"]
-db_user = assets["db_user"]
-db_password = assets["db_password"]
-
-# Check if asset exists
-if agent.has_asset("optional_config"):
-    config = agent.get_asset("optional_config")
-else:
-    config = "default_value"
+def execute(self):
+    """
+    Add your automation code here!
+    """
+    self.logger.info("🤖 Starting my automation...")
+    
+    # Example: Get data from platform
+    api_key = self.get_asset('api_key')  # Get secure data
+    
+    # Example: Create folders for your files
+    create_transaction_folders(self.bot_name, self.logger)
+    
+    # TODO: Your automation code here!
+    # - Process files
+    # - Scrape websites  
+    # - Automate tasks
+    # - Send emails
+    # - Anything you want!
+    
+    return {
+        'message': '✅ My automation finished!',
+        'data': {'items_processed': 5}
+    }
 ```
 
-### Error Handling
+## Step 4: Test Your Bot
 
-Implement robust error handling:
+Run your bot locally to test it:
 
-```python
-from openautomateagent import Client, OpenAutomateError
-
-def main():
-    agent = Client()
-    
-    try:
-        agent.update_status("Starting")
-        
-        # Your automation logic
-        result = risky_operation()
-        
-        agent.log(f"Success: {result}", level="info")
-        agent.update_status("Completed")
-        return 0
-        
-    except OpenAutomateError as e:
-        # OpenAutomate-specific errors
-        agent.log(f"OpenAutomate error: {e}", level="error")
-        agent.update_status("Failed - OpenAutomate Error")
-        return 1
-        
-    except ConnectionError as e:
-        # Network-related errors
-        agent.log(f"Connection error: {e}", level="error")
-        agent.update_status("Failed - Connection Error")
-        return 2
-        
-    except Exception as e:
-        # All other errors
-        agent.log(f"Unexpected error: {e}", level="error")
-        agent.update_status("Failed - Unexpected Error")
-        return 3
+```bash
+python bot.py
 ```
 
-## Common Automation Patterns
+You should see:
+- Log messages in the console
+- Files created in `Documents/openautomate-bot/YourBotName/`
 
-### File Processing
+## What You Get Automatically
+
+### 🗂️ Automatic Folders
+The bot creates folders for your files in `Documents/openautomate-bot/YourBot/`:
+- `input/` - Put files to process here
+- `output/` - Bot saves results here  
+- `temp/` - Temporary files
+- `screenshots/` - Screenshots
+
+### 🔑 Secure Assets
+Get sensitive data safely:
+```python
+api_key = self.get_asset('api_key')        # Get API key
+password = self.get_asset('database_pass')  # Get password
+all_keys = self.get_all_asset_keys()       # See what's available
+```
+
+### 📝 Easy Logging
+```python
+self.logger.info("Starting task...")       # Info message
+self.logger.warning("Something's odd...")   # Warning
+self.logger.error("Oops, failed!")        # Error
+```
+
+### 📊 Status Updates
+```python
+self.update_status("Processing files...")   # Update progress
+self.update_status("Almost done...")        # Keep users informed
+```
+
+## Basic Examples
+
+### Simple File Processor
 
 ```python
-import os
-from pathlib import Path
-
-def process_files(agent, input_folder, output_folder):
-    agent.update_status("Scanning input folder")
+def execute(self):
+    # Get input and output folders
+    input_folder = ensure_folder(self.bot_name, "input")
+    output_folder = ensure_folder(self.bot_name, "output")
     
-    input_path = Path(input_folder)
-    output_path = Path(output_folder)
-    output_path.mkdir(exist_ok=True)
-    
-    files = list(input_path.glob("*.txt"))
-    total_files = len(files)
-    
-    agent.log(f"Found {total_files} files to process", level="info")
-    
-    for i, file_path in enumerate(files):
-        progress = int((i / total_files) * 100)
-        agent.update_status(f"Processing {file_path.name}", progress=progress)
+    # Process all text files
+    for file in input_folder.glob("*.txt"):
+        with open(file, 'r') as f:
+            content = f.read()
         
-        # Process the file
-        with open(file_path, 'r') as f:
-            content = f.read().upper()  # Example: convert to uppercase
+        # Do something with content (example: convert to uppercase)
+        processed = content.upper()
         
-        output_file = output_path / file_path.name
+        # Save result
+        output_file = output_folder / f"processed_{file.name}"
         with open(output_file, 'w') as f:
-            f.write(content)
-        
-        agent.log(f"Processed {file_path.name}", level="info")
+            f.write(processed)
     
-    agent.update_status("File processing completed")
-    return total_files
+    return {'message': 'Files processed!'}
 ```
 
-### Database Operations
+### Check the Examples Folder
+
+Your generated bot includes complete examples:
+- `examples/simple_web_scraper.py` - Web scraping example
+- `examples/asset_demo.py` - How to use secure assets
+- `examples/complex_bot_example.py` - Advanced multi-task bot
+
+## Creating Additional Bots
+
+After your first bot, creating more is even easier:
+
+### If You Have the Template Locally
+
+```bash
+# Navigate to where you cloned the template
+cd path/to/openautomate-bot-template
+
+# Generate another bot
+cookiecutter .
+```
+
+### Or Use the GitHub URL Again
+
+```bash
+cookiecutter https://github.com/OpenAutomateOrg/openautomate-bot-template
+```
+
+## Common Automation Ideas
+
+Here are some ideas to get you started:
+
+- **File Processing** - Convert, rename, organize files
+- **Web Scraping** - Extract data from websites  
+- **Excel Automation** - Process spreadsheets
+- **Email Tasks** - Send reports, check inbox
+- **Database Work** - Import/export data
+- **API Integration** - Connect to web services
+- **Report Generation** - Create PDFs, charts
+- **System Monitoring** - Check disk space, processes
+
+## Optional: Advanced Bot Structure
+
+For complex automations, you can organize your code into task modules:
+
+### Create Task Modules
+
+Create a `tasks/` folder and organize your subtasks:
+
+```
+your-bot-project/
+├── bot.py                     # Main orchestrator
+├── tasks/                     # 👈 Your subtasks here
+│   ├── __init__.py           # Makes it a Python package
+│   ├── email_tasks.py        # Email automation
+│   ├── file_tasks.py         # File processing
+│   └── web_tasks.py          # Web scraping
+├── framework/                 # Bot utilities
+└── config/                    # Configuration
+```
+
+### Import and Use Tasks
+
+In your `bot.py`:
 
 ```python
-import sqlite3
+# Import your task modules
+try:
+    from tasks import email_tasks, file_tasks, web_tasks
+except ImportError as e:
+    print(f"⚠️  Some task modules not found: {e}")
 
-def database_automation(agent):
-    # Get database credentials
-    db_path = agent.get_asset("database_path")
+def execute(self):
+    # Use your task modules
+    files_processed = file_tasks.process_csv_files(self.logger, input_folder, output_folder)
+    email_tasks.send_report(self.logger, smtp_config, recipients, report_data)
     
-    agent.update_status("Connecting to database")
-    
-    try:
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        
-        agent.update_status("Executing queries")
-        
-        # Example: Get record count
-        cursor.execute("SELECT COUNT(*) FROM users")
-        count = cursor.fetchone()[0]
-        
-        agent.log(f"Found {count} users in database", level="info")
-        
-        # Example: Update records
-        cursor.execute("UPDATE users SET last_login = ? WHERE active = 1", 
-                      (datetime.now(),))
-        updated = cursor.rowcount
-        
-        conn.commit()
-        agent.log(f"Updated {updated} user records", level="info")
-        
-        return count, updated
-        
-    finally:
-        if conn:
-            conn.close()
-        agent.update_status("Database connection closed")
+    return {'message': '✅ Complex automation completed!'}
 ```
 
-### Web Automation
+## Tips for Success
 
-```python
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+1. **Start Simple** - Begin with logging and folder creation
+2. **Use Examples** - Copy from the examples folder
+3. **Test Often** - Run `python bot.py` frequently  
+4. **Check Folders** - Look in `Documents/openautomate-bot/YourBot/`
+5. **Use Assets** - Store passwords and API keys as assets
+6. **Organize Tasks** - For complex bots, create a `tasks/` folder
 
-def web_automation(agent):
-    agent.update_status("Setting up web driver")
-    
-    # Configure Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Run in background
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    
-    driver = webdriver.Chrome(options=chrome_options)
-    
-    try:
-        agent.update_status("Navigating to website")
-        driver.get("https://example.com")
-        
-        agent.update_status("Filling form")
-        username = agent.get_asset("web_username")
-        password = agent.get_asset("web_password")
-        
-        driver.find_element(By.NAME, "username").send_keys(username)
-        driver.find_element(By.NAME, "password").send_keys(password)
-        driver.find_element(By.XPATH, "//button[@type='submit']").click()
-        
-        agent.update_status("Extracting data")
-        # Extract data from the page
-        data = driver.find_element(By.CLASS_NAME, "result").text
-        
-        agent.log(f"Extracted data: {data}", level="info")
-        return data
-        
-    finally:
-        driver.quit()
-        agent.update_status("Web driver closed")
-```
+## Need Help?
 
-## Testing Your Bot
-
-### Local Testing
-
-Test your bot locally before deployment:
-
-```python
-# test_bot.py
-import unittest
-from unittest.mock import Mock, patch
-from your_bot import main
-
-class TestBot(unittest.TestCase):
-    
-    @patch('your_bot.Client')
-    def test_successful_execution(self, mock_client):
-        # Mock the OpenAutomate client
-        mock_agent = Mock()
-        mock_client.return_value = mock_agent
-        
-        # Run the bot
-        result = main()
-        
-        # Verify the bot behaved correctly
-        self.assertEqual(result, 0)
-        mock_agent.update_status.assert_called()
-        mock_agent.log.assert_called()
-
-if __name__ == "__main__":
-    unittest.main()
-```
-
-### Integration Testing
-
-Test with a real OpenAutomate agent:
-
-```python
-# integration_test.py
-from openautomateagent import Client
-
-def test_integration():
-    agent = Client()
-    
-    try:
-        agent.update_status("Integration test started")
-        agent.log("Testing integration", level="info")
-        
-        # Test asset access
-        test_asset = agent.get_asset("test_asset")
-        print(f"Retrieved test asset: {test_asset}")
-        
-        agent.update_status("Integration test completed")
-        return True
-        
-    except Exception as e:
-        agent.log(f"Integration test failed: {e}", level="error")
-        return False
-
-if __name__ == "__main__":
-    success = test_integration()
-    print(f"Integration test {'passed' if success else 'failed'}")
-```
-
-## Best Practices
-
-### Code Organization
-
-```
-my_automation_bot/
-├── main.py              # Entry point
-├── bot/
-│   ├── __init__.py
-│   ├── core.py          # Main automation logic
-│   ├── utils.py         # Utility functions
-│   └── config.py        # Configuration
-├── tests/
-│   ├── test_core.py
-│   └── test_utils.py
-├── requirements.txt     # Dependencies
-└── README.md           # Documentation
-```
-
-### Error Handling Guidelines
-
-1. **Always use try-catch blocks** around risky operations
-2. **Log errors with context** to help with debugging
-3. **Update status on failures** to inform operators
-4. **Return appropriate exit codes** (0 = success, non-zero = error)
-5. **Clean up resources** in finally blocks
-
-### Performance Tips
-
-1. **Use progress updates** for long-running operations
-2. **Batch operations** when possible
-3. **Implement timeouts** for external calls
-4. **Monitor memory usage** for large data processing
-5. **Use connection pooling** for database operations
+1. **Check Examples** - Look in `examples/` folder in your generated bot
+2. **Read Logs** - The bot tells you what's happening
+3. **Start Simple** - Just make it log "Hello World" first
+4. **Community Support** - Join our [Discord](https://discord.gg/hPt44QfY4B)
 
 ## Next Steps
 
-Now that you understand the basics:
+Once you have a working bot:
 
-1. **Explore Templates**: Check out our [Python Templates](/developer/python-templates)
-2. **Learn Advanced Features**: Read the [SDK Reference](/developer/sdk-reference)
-3. **Package Your Bot**: Learn about [Packaging](/developer/packaging)
-4. **Deploy and Test**: Follow the [Testing Guide](/developer/testing)
-5. **Best Practices**: Review [Best Practices](/developer/best-practices)
+1. **Deploy Your Bot**: Package it as a ZIP file and upload to the OpenAutomate dashboard
+2. **Explore Advanced Features**: Check out [Python Templates](/developer/python-templates) for more examples
+3. **Learn About Assets**: Store credentials securely in the platform
+4. **Set Up Scheduling**: Run your bots automatically on schedules
+
+You're ready to start automating! 🤖
+
+Happy automating! 🎉
